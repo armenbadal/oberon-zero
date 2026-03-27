@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'antlr'
+    id 'application'
+}
+
+group = 'oberonz'
+version = '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+
+dependencies {
+    // ANTLR tool (code generation)
+    antlr libs.antlr.tool
+
+    // ANTLR runtime (used in your program)
+    implementation libs.antlr.runtime
+
+    // Bytecode engineering
+    implementation libs.bcel
+
+    // Testing
+    testImplementation libs.junit.api
+    testRuntimeOnly libs.junit.engine
+    testRuntimeOnly libs.junit.launcher
+}
+
+
+application {
+    mainClass = 'oberonz.Main'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+generateGrammarSource {
+    maxHeapSize = "64m"
+    arguments += [
+        "-encoding", "utf-8",
+        "-no-listener",
+        "-visitor",
+        "-long-messages"
+    ]
+}
