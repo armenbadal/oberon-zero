@@ -27,15 +27,15 @@ types
 type
     : IDENT
     | KW_ARRAY expression? KW_OF type
-    | KW_RECORD (fields (';' fields)*)? KW_END
+    | KW_RECORD (typednames (';' typednames)*)? KW_END
     ;
 
-fields
+typednames
     : identlist ':' type
     ;
 
 variables
-    : KW_VAR (identlist ':' type ';')+
+    : KW_VAR (typednames ';')+
     ;
 
 procedures

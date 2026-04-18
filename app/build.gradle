@@ -39,6 +39,10 @@ application {
     mainClass = 'oberonz.Main'
 }
 
+run {
+    args "${projectDir}/../examples/ex01.mod"
+}
+
 test {
     useJUnitPlatform()
 }
