@@ -4,16 +4,12 @@ grammar OberonZeroSyntax;
 package oberonz.parser;
 }
 
-program
-    : module EOF
-    ;
-
 module
-    : KW_MODULE IDENT ';' declarations (KW_BEGIN sequence)? KW_END IDENT '.'
+    : KW_MODULE IDENT ';' declarations (KW_BEGIN sequence)? KW_END IDENT '.' EOF
     ;
 
 declarations
-    : constants? types? variables? procedures?
+    : constants? types? variables? procedures
     ;
 
 constants
@@ -39,7 +35,7 @@ variables
     ;
 
 procedures
-    : (procedure ';')+
+    : (procedure ';')*
     ;
 
 procedure
@@ -60,16 +56,22 @@ sequence
     ;
 
 statement
-    : IDENT selector? ':=' expression
-    | IDENT selector? arguments?
+    : designator ':=' expression
+    | designator arguments?
     | KW_IF expression KW_THEN sequence
       (KW_ELSIF expression KW_THEN sequence)*
       (KW_ELSE sequence)? KW_END
     | KW_WHILE expression KW_DO sequence KW_END
+    | KW_RETURN expression?
+    ;
+
+designator
+    : IDENT selector*
     ;
 
 selector
-    : ('.' IDENT | '[' expression ']')+
+    : '.' IDENT
+    | '[' expression ']'
     ;
 
 arguments
@@ -93,8 +95,8 @@ term
     ;
 
 factor
-    : IDENT selector?
-    | IDENT selector? arguments?
+    : designator
+    | designator arguments?
     | INTEGER
     | '(' expression ')'
     | '~' factor
@@ -104,6 +106,7 @@ KW_MODULE: 'MODULE';
 KW_BEGIN: 'BEGIN';
 KW_END: 'END';
 KW_PROCEDURE: 'PROCEDURE';
+KW_RETURN: 'RETURN';
 KW_CONST: 'CONST';
 KW_TYPE: 'TYPE';
 KW_VAR: 'VAR';
@@ -124,4 +127,4 @@ KW_MOD: 'MOD';
 INTEGER: [0-9]+;
 IDENT : [a-zA-Z][a-zA-Z0-9]*;
 SPACES: [ \t\n\r] -> skip;
-COMMENT: '{' '}' -> skip;
+COMMENT: '{' .* '}' -> skip;

@@ -13,7 +13,7 @@ public class Main {
             var lexer = new OberonZeroSyntaxLexer(input);
             var tokens = new CommonTokenStream(lexer);
             var parser = new OberonZeroSyntaxParser(tokens);
-            var tree = parser.program();
+            var tree = parser.module();
 
             System.out.println("----------------------------------------------------");
             System.out.println(tree.toStringTree(parser));

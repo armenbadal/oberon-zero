@@ -1,4 +1,5 @@
 package oberonz.ast;
 
-public sealed interface Node permits Expression {
+public sealed interface Node
+        permits Statement, Expression, Selector {
 }
