@@ -1,4 +1,4 @@
-grammar OberonZeroSyntax;
+grammar OberonZero;
 
 @header{
 package oberonz.parser;
@@ -9,7 +9,7 @@ module
     ;
 
 declarations
-    : constants? types? variables? procedures
+    : constants? types? variables? procedures?
     ;
 
 constants
@@ -27,7 +27,7 @@ type
     ;
 
 typednames
-    : identlist ':' type
+    : identList ':' type
     ;
 
 variables
@@ -35,7 +35,7 @@ variables
     ;
 
 procedures
-    : (procedure ';')*
+    : (procedure ';')+
     ;
 
 procedure
@@ -48,7 +48,7 @@ parameters
     ;
 
 parameter
-    : KW_VAR? identlist ':' type
+    : KW_VAR? identList ':' type
     ;
 
 sequence
@@ -78,7 +78,7 @@ arguments
     : '(' (expression (',' expression)*)? ')'
     ;
 
-identlist
+identList
     : IDENT (',' IDENT)*
     ;
 
@@ -95,12 +95,13 @@ term
     ;
 
 factor
-    : designator
-    | designator arguments?
-    | INTEGER
-    | '(' expression ')'
-    | '~' factor
+    : designator             #addressedValue
+    | designator arguments   #application
+    | INTEGER                #integerLiteral
+    | '(' expression ')'     #priority
+    | '~' factor             #negation
     ;
+
 
 KW_MODULE: 'MODULE';
 KW_BEGIN: 'BEGIN';
@@ -127,4 +128,4 @@ KW_MOD: 'MOD';
 INTEGER: [0-9]+;
 IDENT : [a-zA-Z][a-zA-Z0-9]*;
 SPACES: [ \t\n\r] -> skip;
-COMMENT: '{' .* '}' -> skip;
+COMMENT: '{' (~'}')* '}' -> skip;
